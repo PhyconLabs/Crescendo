@@ -1,0 +1,16 @@
+{
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:SDSG/IoC.git"
+        }
+    ],
+    "require": {
+        "sds/ioc": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Crescendo\\": "src"
+        }
+    }
+}
