@@ -4,10 +4,15 @@
         {
             "type": "vcs",
             "url": "git@github.com:SDSG/IoC.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:SDSG/ClassSupport.git"
         }
     ],
     "require": {
-        "sds/ioc": "dev-master"
+        "sds/ioc": "dev-master",
+        "sds/class-support": "dev-master"
     },
     "autoload": {
         "psr-4": {
