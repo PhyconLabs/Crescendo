@@ -1,4 +1,5 @@
 {
+    "name": "crescendo/core",
     "repositories": [
         {
             "type": "vcs",
