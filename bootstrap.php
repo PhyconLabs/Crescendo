@@ -1,6 +1,8 @@
 <?php
 namespace Crescendo;
 
+use \SDS\ClassSupport\Klass;
+
 /**
  * Define all required constants under Crescendo namespace.
  */
@@ -26,6 +28,29 @@ if (file_exists($applicationBootstrapPath)) {
     require $applicationBootstrapPath;
 }
 
+// Initialize Application if not already initialized by application bootstrap file.
 if (!isset($application)) {
     $application = Application::init();
 }
+
+// Make Application available from global namespace if not already there.
+$applicationKlass = new Klass($application);
+
+if (!$applicationKlass->aliasToIfFree("Application")) {
+    $rootApplicationClass = new Klass("Application");
+    
+    // If Application is already in global namespace then check if it's extending \Crescendo\Application.
+    if (!$rootApplicationClass->isA("Crescendo\\Application")) {
+        throw new Exceptions\RootApplicationClassTakenException(
+            "Class `Application` exists and isn't extending `\\Crescendo\\Application` class."
+        );
+    }
+}
+
+// Include various helper functions to make code writing easier. It can be disabled
+// by setting $globalizeHelperFunctions to false in application bootstrap file.
+if (!isset($globalizeHelperFunctions)) {
+    $globalizeHelperFunctions = true;
+}
+
+require ROOT_PATH . "/src/IoC/helpers.php"; // IoC Container helper functions
