@@ -1,18 +1,13 @@
 <?php
 namespace Crescendo\Config;
 
-use \Application;
-
 class EnvironmentContainer implements \Crescendo\EnvironmentContainer
 {
-    protected $application;
     protected $environments;
     
-    public function __construct(Application $application, array $environments)
+    public function __construct(array $environments)
     {
         $this->environments = [];
-        
-        $this->setApplication($application);
         
         foreach ($environments as $environment) {
             $this->appendEnvironment($environment);
@@ -136,17 +131,5 @@ class EnvironmentContainer implements \Crescendo\EnvironmentContainer
     public function hasEnvironmentWithClass($class)
     {
         return !is_null($this->getEnvironmentByClass($class));
-    }
-    
-    protected function getApplication()
-    {
-        return $this->application;
-    }
-    
-    protected function setApplication(Application $application)
-    {
-        $this->application = $application;
-        
-        return $this;
     }
 }

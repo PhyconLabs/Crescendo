@@ -55,11 +55,20 @@ class Application
         
         $this->bindEnvironmentContainerImplementation($environments);
         
-        $environmentContainer = $container->make("\\Crescendo\\EnvironmentContainer");
+        $environmentContainer = $container->make("Crescendo\\EnvironmentContainer");
         
         $this->ensureGlobalEnvironment($environmentContainer);
         
         return $this;
+    }
+    
+    public function initConfig()
+    {
+        $container = $this->getContainer();
+        
+        $this->bindConfigImplementation();
+        
+        $config = $container->make("Crescendo\\Config");
     }
     
     public function getContainer()
@@ -82,11 +91,11 @@ class Application
     protected function getEnvironmentMap()
     {
         return [
-            "global" => "\\Crescendo\\Config\\Environments\\GlobalEnvironment",
-            "development" => "\\Crescendo\\Config\\Environments\\DevelopmentEnvironment",
-            "testing" => "\\Crescendo\\Config\\Environments\\TestingEnvironment",
-            "staging" => "\\Crescendo\\Config\\Environments\\StagingEnvironment",
-            "production" => "\\Crescendo\\Config\\Environments\\ProductionEnvironment"
+            "global" => "Crescendo\\Config\\Environments\\GlobalEnvironment",
+            "development" => "Crescendo\\Config\\Environments\\DevelopmentEnvironment",
+            "testing" => "Crescendo\\Config\\Environments\\TestingEnvironment",
+            "staging" => "Crescendo\\Config\\Environments\\StagingEnvironment",
+            "production" => "Crescendo\\Config\\Environments\\ProductionEnvironment"
         ];
     }
     
@@ -94,7 +103,7 @@ class Application
     {
         $container = $this->getContainer();
         
-        $container->bind("\\Crescendo\\Environment", "\\Crescendo\\Config\\Environment");
+        $container->bind("Crescendo\\Environment", "Crescendo\\Config\\Environment");
         
         return $this;
     }
@@ -103,8 +112,17 @@ class Application
     {
         $container = $this->getContainer();
         
-        $container->bindSingleton("\\Crescendo\\EnvironmentContainer", "\\Crescendo\\Config\\EnvironmentContainer");
-        $container->bindSingletonArgument("\\Crescendo\\EnvironmentContainer", "environments", $environments);
+        $container->bindSingleton("Crescendo\\EnvironmentContainer", "Crescendo\\Config\\EnvironmentContainer");
+        $container->bindSingletonArgument("Crescendo\\EnvironmentContainer", "environments", $environments);
+        
+        return $this;
+    }
+    
+    protected function bindConfigImplementation()
+    {
+        $container = $this->getContainer();
+        
+        $container->bindSingleton("Crescendo\\Config", "Crescendo\\Config\\Config");
         
         return $this;
     }
@@ -151,7 +169,7 @@ class Application
             try {
                 $environment = $container->make($environment);
             } catch (IoCException $e) {
-                $environment = $container->make("\\Crescendo\\Environment", [
+                $environment = $container->make("Crescendo\\Environment", [
                     "name" => $environment
                 ]);
             }

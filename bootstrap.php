@@ -56,3 +56,5 @@ if (!isset($globalizeHelperFunctions)) {
 require ROOT_PATH . "/src/IoC/helpers.php"; // IoC Container helper functions
 
 $application->initEnvironment(); // Initialize environment.
+
+$application->initConfig();

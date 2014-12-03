@@ -3,7 +3,7 @@ namespace Crescendo;
 
 interface Environment
 {
-    public function __construct(\Application $application, $name = null);
+    public function __construct($name = null);
     
     public function getName();
 }

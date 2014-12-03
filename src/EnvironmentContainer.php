@@ -3,7 +3,7 @@ namespace Crescendo;
 
 interface EnvironmentContainer
 {
-    public function __construct(\Application $application, array $environments);
+    public function __construct(array $environments);
     
     public function getEnvironments();
     
