@@ -8,11 +8,16 @@
         {
             "type": "vcs",
             "url": "git@github.com:SDSG/ClassSupport.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:SDSG/ArraySupport.git"
         }
     ],
     "require": {
         "sds/ioc": "dev-master",
-        "sds/class-support": "dev-master"
+        "sds/class-support": "dev-master",
+        "sds/array-support": "dev-master"
     },
     "autoload": {
         "psr-4": {
