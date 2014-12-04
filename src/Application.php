@@ -1,7 +1,9 @@
 <?php
 namespace Crescendo;
 
+use \SDS\ClassSupport\Klass;
 use \SDS\IoC\Exceptions\IoCException;
+use \SDS\ClassSupport\Exceptions\ClassSupportException;
 
 class Application
 {
@@ -10,6 +12,7 @@ class Application
     protected static $instance;
     
     protected $container;
+    protected $applets;
     
     public static function init()
     {
@@ -41,7 +44,54 @@ class Application
     
     public function __construct()
     {
+        $this->applets = [];
+        
         $this->setContainer($this->dispatchContainer());
+    }
+    
+    public function registerApplet($applet)
+    {
+        if (is_object($applet) && !$applet instanceof Applet) {
+            $class = get_class($applet);
+            
+            throw new Exceptions\InvalidAppletException(
+                "Applet must be instance of `\\Crescendo\\Applet` - instance of `\\{$class}` given."
+            );
+        }
+        
+        if (!is_object($applet)) {
+            $container = $this->getContainer();
+            $applet = $container->make($applet);
+        }
+        
+        $appletName = $applet->getName();
+        
+        if (isset($this->applets[$appletName])) {
+            $applet = $this->applets[$appletName];
+        } else {
+            $this->applets[$appletName] = $applet;
+            
+            $applet->onRegister();
+        }
+        
+        return $applet;
+    }
+    
+    public function registerAppletByName($appletName)
+    {
+        $appletPath = COMPOSER_ROOT_PATH . "/{$appletName}/src/Applet.php";
+        
+        try {
+            $klass = Klass::createFromPath($appletPath);
+        } catch (ClassSupportException $e) {
+            throw new Exceptions\InvalidAppletException(
+                "Couldn't retrieve applet details for `{$appletName}` with path `{$appletPath}`.",
+                0,
+                $e
+            );
+        }
+        
+        return $this->registerApplet($klass->getClass());
     }
     
     public function initEnvironment()
