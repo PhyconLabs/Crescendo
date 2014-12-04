@@ -64,11 +64,10 @@ class Application
     
     public function initConfig()
     {
-        $container = $this->getContainer();
-        
         $this->bindConfigImplementation();
+        $this->setDefaultConfigIncludePaths();
         
-        $config = $container->make("Crescendo\\Config");
+        return $this;
     }
     
     public function getContainer()
@@ -140,7 +139,7 @@ class Application
         } elseif (($environmentVariableValue = getenv(static::ENVIRONMENT_VARIABLE)) !== false) {
             $environments = explode(",", $environmentVariableValue);
         } else {
-            $environments = [];
+            $environments = [ "production" ];
         }
         
         return $environments;
@@ -185,6 +184,17 @@ class Application
             
             $environmentContainer->appendEnvironment($globalEnvironment);
         }
+        
+        return $this;
+    }
+    
+    protected function setDefaultConfigIncludePaths()
+    {
+        $container = $this->getContainer();
+        $config = $container->make("Crescendo\\Config");
+        
+        $config->addIncludePath(ROOT_PATH . "/config", $config::CRESCENDO_PRIORITY);
+        $config->addIncludePath(APPLICATION_ROOT_PATH . "/config", $config::APPLICATION_PRIORITY);
         
         return $this;
     }

@@ -14,16 +14,23 @@ class EnvironmentContainer implements \Crescendo\EnvironmentContainer
         }
     }
     
-    public function getEnvironments()
+    public function getEnvironments($reverse = false)
     {
-        return $this->environments;
+        $environments = $this->environments;
+        
+        if ($reverse) {
+            $environments = array_reverse($environments);
+        }
+        
+        return $environments;
     }
     
-    public function getEnvironmentNames()
+    public function getEnvironmentNames($reverse = false)
     {
         $names = [];
+        $environments = $this->getEnvironments($reverse);
         
-        foreach ($this->environments as $environment) {
+        foreach ($environments as $environment) {
             $names[] = $environment->getName();
         }
         

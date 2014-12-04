@@ -5,9 +5,9 @@ interface EnvironmentContainer
 {
     public function __construct(array $environments);
     
-    public function getEnvironments();
+    public function getEnvironments($reverse = false);
     
-    public function getEnvironmentNames();
+    public function getEnvironmentNames($reverse = false);
     
     public function getEnvironmentByName($name);
     
