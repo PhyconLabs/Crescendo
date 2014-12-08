@@ -43,7 +43,7 @@ class Application
     }
     
     public function __construct()
-    {var_dump("CREATE!");
+    {
         $this->applets = [];
         
         $this->setContainer($this->dispatchContainer());
