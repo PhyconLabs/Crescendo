@@ -43,7 +43,7 @@ class Application
     }
     
     public function __construct()
-    {
+    {var_dump("CREATE!");
         $this->applets = [];
         
         $this->setContainer($this->dispatchContainer());
@@ -51,17 +51,34 @@ class Application
     
     public function registerApplet($applet)
     {
-        if (is_object($applet) && !$applet instanceof Applet) {
+        if (is_object($applet)) {
+            return $this->registerAppletByObject($applet);
+        } else {
+            if (preg_match("#^[a-zA-Z0-9-_]+\\/[a-zA-Z0-9-_]+$#", $applet)) {
+                return $this->registerAppletByName($applet);
+            } else {
+                return $this->registerAppletFromContainer($applet);
+            }
+        }
+    }
+    
+    public function registerAppletByObject($applet)
+    {
+        if (!is_object($applet)) {
+            $class = get_class($class);
+            $type = gettype($applet);
+            
+            throw new Exceptions\InvalidAppletException(
+                "Applet must be an object if given to `{$class}::registerAppletByObject()` method. `{$type}` given."
+            );
+        }
+        
+        if (!$applet instanceof Applet) {
             $class = get_class($applet);
             
             throw new Exceptions\InvalidAppletException(
                 "Applet must be instance of `\\Crescendo\\Applet` - instance of `\\{$class}` given."
             );
-        }
-        
-        if (!is_object($applet)) {
-            $container = $this->getContainer();
-            $applet = $container->make($applet);
         }
         
         $appletName = $applet->getName();
@@ -75,6 +92,16 @@ class Application
         }
         
         return $applet;
+    }
+    
+    public function registerAppletFromContainer($applet)
+    {
+        $container = $this->getContainer();
+        $applet = $container->make($applet, [
+            "application" => $this
+        ]);
+        
+        return $this->registerAppletByObject($applet);
     }
     
     public function registerAppletByName($appletName)
@@ -91,7 +118,7 @@ class Application
             );
         }
         
-        return $this->registerApplet($klass->getClass());
+        return $this->registerAppletFromContainer($klass->getClass());
     }
     
     public function initEnvironment()
@@ -116,6 +143,22 @@ class Application
     {
         $this->bindConfigImplementation();
         $this->setDefaultConfigIncludePaths();
+        
+        return $this;
+    }
+    
+    public function initApplets()
+    {
+        $container = $this->getContainer();
+        $config = $container->make("Crescendo\\Config");
+        
+        $applets = $config->get("applets", []);
+        
+        if (is_array($applets)) {
+            foreach ($applets as $applet) {
+                $this->registerApplet($applet);
+            }
+        }
         
         return $this;
     }

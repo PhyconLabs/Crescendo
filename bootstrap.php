@@ -90,3 +90,9 @@ $application->initEnvironment();
  */
 
 $application->initConfig();
+
+/**
+ * Initialize applets.
+ */
+
+$application->initApplets();
